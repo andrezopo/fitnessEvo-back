@@ -1,0 +1,43 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Users {
+  id            Int           @id @default(autoincrement())
+  email         String        @unique
+  password      String
+  name          String
+  age           Int
+  gender        Gender
+  weight        Int
+  height        Int
+  activityLevel ActivityLevel
+  objective     Objective
+}
+
+enum Gender {
+  Male
+  Female
+}
+
+enum ActivityLevel {
+  Sedentary
+  Lightly_Active
+  Active
+  Very_Active
+  Extremely_Active
+}
+
+enum Objective {
+  Fat_Loss
+  Maintenance
+  Mass_Gain
+}

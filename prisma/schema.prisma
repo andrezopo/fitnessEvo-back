@@ -11,33 +11,80 @@ datasource db {
 }
 
 model Users {
-  id            Int           @id @default(autoincrement())
-  email         String        @unique
-  password      String
-  name          String
-  age           Int
-  gender        Gender
-  weight        Int
-  height        Int
-  activityLevel ActivityLevel
-  objective     Objective
+  id        Int        @id @default(autoincrement())
+  email     String     @unique
+  password  String
+  name      String
+  userInfos UserInfos?
+
+  @@map("users")
+}
+
+model UserInfos {
+  id                 Int                @id @default(autoincrement())
+  user               Users              @relation(fields: [userId], references: [id])
+  userId             Int                @unique
+  gender             Gender
+  age                Int
+  weight             Int
+  height             Int
+  activityLevel      ActivityLevel
+  objective          Objective
+  bodyFat            Int?
+  trainingExperience TrainingExperience
+  calorieGoal        Int?
+  proteinGoal        Int?
+  carbohydrateGoal   Int?
+  fatGoal            Int?
+  meals              Meals[]
+}
+
+model Foods {
+  id           Int     @id @default(autoincrement())
+  name         String
+  protein      Int
+  carbohydrate Int
+  fat          Int
+  votes        Int     @default(0)
+  meals        Meals[]
+
+  @@map("foods")
+}
+
+model Meals {
+  id     Int       @id @default(autoincrement())
+  user   UserInfos @relation(fields: [userId], references: [id])
+  userId Int
+  food   Foods     @relation(fields: [foodId], references: [id])
+  foodId Int
+  amount Int
+  date   DateTime  @default(now())
+
+  @@map("meals")
 }
 
 enum Gender {
-  Male
-  Female
+  male
+  female
 }
 
 enum ActivityLevel {
-  Sedentary
-  Lightly_Active
-  Active
-  Very_Active
-  Extremely_Active
+  sedentary
+  lightly_active
+  active
+  very_active
+  extremely_active
 }
 
 enum Objective {
-  Fat_Loss
-  Maintenance
-  Mass_Gain
+  fat_loss
+  maintenance
+  mass_gain
+}
+
+enum TrainingExperience {
+  begginer
+  intermediate
+  advanced
+  athlete
 }

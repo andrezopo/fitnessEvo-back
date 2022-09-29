@@ -37,6 +37,8 @@ model UserInfos {
   carbohydrateGoal   Int?
   fatGoal            Int?
   meals              Meals[]
+
+  @@map("userInfos")
 }
 
 model Foods {

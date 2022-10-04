@@ -31,7 +31,7 @@ export async function signIn(user: SignInUser) {
   if (!isCorrectPassword) {
     throw { type: "unauthorized", message: "e-mail and/or password incorrect" };
   }
-  const secret = process.env.SECRET;
+  const secret = process.env.JWT_SECRET;
   const token = jwt.sign({ id: dbUser.id }, secret, { expiresIn: 60 * 20 });
   return { token, name: dbUser.name };
 }

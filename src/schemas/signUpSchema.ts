@@ -8,3 +8,5 @@ const signUpSchema = joi.object<User>({
   password: joi.string().pattern(userRegex).required(),
   name: joi.string().required(),
 });
+
+export default signUpSchema;

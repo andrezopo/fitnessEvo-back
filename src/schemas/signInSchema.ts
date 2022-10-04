@@ -7,3 +7,5 @@ const signInSchema = joi.object<SignInUser>({
   email: joi.string().email().required(),
   password: joi.string().pattern(userRegex).required(),
 });
+
+export default signInSchema;

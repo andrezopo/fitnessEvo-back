@@ -11,23 +11,23 @@ export async function insertUserInfos(
   let carbPerKg = 0;
   switch (userInfos.activityLevel) {
     case "sedentary":
-      activityFactor = 1.2;
+      activityFactor = 1.4;
       carbPerKg = 2.5;
       break;
     case "lightly_active":
-      activityFactor = 1.375;
+      activityFactor = 1.6;
       carbPerKg = 3.5;
       break;
     case "active":
-      activityFactor = 1.55;
+      activityFactor = 1.9;
       carbPerKg = 4.0;
       break;
     case "very_active":
-      activityFactor = 1.725;
+      activityFactor = 2.2;
       carbPerKg = 4.5;
       break;
     default:
-      activityFactor = 1.9;
+      activityFactor = 2.5;
       carbPerKg = 6.0;
   }
   if (userInfos.bodyFat === undefined) {
@@ -45,64 +45,70 @@ export async function insertUserInfos(
   totalDailyEnergyExpenditure = basalMethabolicRate * activityFactor;
   let proteinPerKg = 0;
   let calorieGoal = 0;
-  switch ([userInfos.objective, userInfos.trainingExperience]) {
-    case ["fat_loss", "athlete"]:
+
+  switch (userInfos.objective && userInfos.trainingExperience) {
+    case "fat_loss" && "athlete":
       proteinPerKg = 3.1;
-      calorieGoal = 0.8 * totalDailyEnergyExpenditure;
+      calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
       break;
-    case ["fat_loss", "advanced"]:
+    case "fat_loss" && "advanced":
       proteinPerKg = 2.8;
-      calorieGoal = 0.8 * totalDailyEnergyExpenditure;
+      calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
       break;
-    case ["fat_loss", "intermediate"]:
+    case "fat_loss" && "intermediate":
       proteinPerKg = 2.5;
-      calorieGoal = 0.8 * totalDailyEnergyExpenditure;
+      calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
       break;
-    case ["fat_loss", "beginner"]:
+    case "fat_loss" && "beginner":
       proteinPerKg = 2.3;
-      calorieGoal = 0.8 * totalDailyEnergyExpenditure;
+      calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
       break;
-    case ["mass_gain", "athlete"]:
+    case "mass_gain" && "athlete":
       proteinPerKg = 2.4;
-      calorieGoal = 1.4 * totalDailyEnergyExpenditure;
+      calorieGoal = Math.round(1.4 * totalDailyEnergyExpenditure);
       break;
-    case ["mass_gain", "advanced"]:
+    case "mass_gain" && "advanced":
       proteinPerKg = 2.2;
-      calorieGoal = 1.4 * totalDailyEnergyExpenditure;
+      calorieGoal = Math.round(1.4 * totalDailyEnergyExpenditure);
       break;
-    case ["mass_gain", "intermediate"]:
+    case "mass_gain" && "intermediate":
       proteinPerKg = 1.9;
-      calorieGoal = 1.4 * totalDailyEnergyExpenditure;
+      calorieGoal = Math.round(1.4 * totalDailyEnergyExpenditure);
       break;
-    case ["mass_gain", "beginner"]:
+    case "mass_gain" && "beginner":
       proteinPerKg = 1.6;
-      calorieGoal = 1.4 * totalDailyEnergyExpenditure;
+      calorieGoal = Math.round(1.4 * totalDailyEnergyExpenditure);
       break;
-    case ["maintenance", "athlete"]:
+    case "maintenance" && "athlete":
       proteinPerKg = 2.0;
       calorieGoal = totalDailyEnergyExpenditure;
       break;
-    case ["maintenance", "advanced"]:
+    case "maintenance" && "advanced":
       proteinPerKg = 1.8;
       calorieGoal = totalDailyEnergyExpenditure;
       break;
-    case ["maintenance", "intermediate"]:
+    case "maintenance" && "intermediate":
       proteinPerKg = 1.6;
       calorieGoal = totalDailyEnergyExpenditure;
       break;
-    case ["maintenance", "beginner"]:
+    case "maintenance" && "beginner":
       proteinPerKg = 1.4;
       calorieGoal = totalDailyEnergyExpenditure;
       break;
   }
-  const proteinGoal = Number(
-    ((userInfos.weight / 10) * proteinPerKg).toFixed(2)
+
+  const proteinGoal = Math.round(
+    Number(((userInfos.weight / 10) * proteinPerKg).toFixed(2))
   );
-  const carbohydrateGoal = Number(
-    ((userInfos.weight / 10) * carbPerKg).toFixed(2)
+
+  const carbohydrateGoal = Math.round(
+    Number(((userInfos.weight / 10) * carbPerKg).toFixed(2))
   );
-  const fatGoal = Number(
-    ((calorieGoal - (proteinGoal + carbohydrateGoal) * 4) / 9).toFixed(2)
+
+  const fatGoal = Math.round(
+    Number(
+      ((calorieGoal - (proteinGoal + carbohydrateGoal) * 4) / 9).toFixed(2)
+    )
   );
 
   const userCompleteInfos = {
@@ -113,6 +119,9 @@ export async function insertUserInfos(
     carbohydrateGoal,
     fatGoal,
   };
+  console.log(userCompleteInfos);
 
   await userRepository.insertInfos(userCompleteInfos);
+
+  return userCompleteInfos;
 }

@@ -4,9 +4,8 @@ import * as userService from "../services/userService";
 
 export async function insertUserInfos(req: Request, res: Response) {
   const userInfos: UserAdditionalInfos = req.body;
-  const userId: number = Number(res.locals.id);
-  await userService.insertUserInfos(userInfos, userId);
-  res
-    .status(201)
-    .send("Your daily recommended intakes have been created succesfully!");
+  const userId: number = Number(res.locals.userId);
+
+  const result = await userService.insertUserInfos(userInfos, userId);
+  res.status(201).send(result);
 }

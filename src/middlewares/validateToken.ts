@@ -19,7 +19,7 @@ export default async function validateToken(
       return res.status(422).send("Missing token");
     }
 
-    jwt.verify(token, process.env.SECRET, async (err, decoded) => {
+    jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
       if (err) {
         return res.status(401).send(err.message);
       }

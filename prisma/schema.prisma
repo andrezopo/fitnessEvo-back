@@ -37,7 +37,7 @@ model UserInfos {
   carbohydrateGoal   Int?
   fatGoal            Int?
   meals              Meals[]
-  usersVotes         UsersVotes[]
+  userVotes          UsersVotes[]
 
   @@map("user_infos")
 }
@@ -58,7 +58,7 @@ model Foods {
 
 model Meals {
   id     Int       @id @default(autoincrement())
-  user   UserInfos @relation(fields: [userId], references: [id])
+  user   UserInfos @relation(fields: [userId], references: [userId])
   userId Int
   food   Foods     @relation(fields: [foodId], references: [id])
   foodId Int
@@ -70,7 +70,7 @@ model Meals {
 
 model UsersVotes {
   id     Int       @id @default(autoincrement())
-  user   UserInfos @relation(fields: [userId], references: [id])
+  user   UserInfos @relation(fields: [userId], references: [userId])
   userId Int
   food   Foods     @relation(fields: [foodId], references: [id])
   foodId Int

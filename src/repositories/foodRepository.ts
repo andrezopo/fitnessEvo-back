@@ -11,3 +11,21 @@ export async function searchFood(searchString: string) {
     orderBy: { votes: "desc" },
   });
 }
+
+export async function searchFoodById(id: number) {
+  return await prisma.foods.findUnique({ where: { id } });
+}
+
+export async function upvoteById(foodId: number) {
+  await prisma.foods.update({
+    where: { id: foodId },
+    data: { votes: { increment: 1 } },
+  });
+}
+
+export async function downvoteById(foodId: number) {
+  await prisma.foods.update({
+    where: { id: foodId },
+    data: { votes: { decrement: 1 } },
+  });
+}

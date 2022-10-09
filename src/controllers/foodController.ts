@@ -17,3 +17,12 @@ export async function searchFood(req: Request, res: Response) {
 
   res.status(200).send(foods);
 }
+
+export async function upvoteFood(req: Request, res: Response) {
+  const foodId: number = Number(req.params.id);
+  const userId: number = Number(res.locals.userId);
+
+  await foodService.upvoteFood(foodId, userId);
+
+  res.status(200).send("Food table upvoted");
+}

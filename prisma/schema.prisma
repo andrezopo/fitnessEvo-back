@@ -63,7 +63,7 @@ model Meals {
   food   Foods     @relation(fields: [foodId], references: [id])
   foodId Int
   amount Int
-  date   DateTime  @default(now())
+  date   DateTime  @default(now()) @db.Timestamptz(3)
 
   @@map("meals")
 }

@@ -18,7 +18,7 @@ const additionalInfoSchema = joi.object<UserAdditionalInfos>({
     .required(),
   trainingExperience: joi
     .string()
-    .valid("begginer", "intermediate", "advanced", "atlhete")
+    .valid("beginner", "intermediate", "advanced", "athlete")
     .required(),
   objective: joi
     .string()

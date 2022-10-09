@@ -6,6 +6,10 @@ export async function insertFood(food: CreatingFood) {
   return await foodRepository.insertFood(foodMacros);
 }
 
+export async function searchFood(foodString: string) {
+  return await foodRepository.searchFood(foodString);
+}
+
 function calculateMacrosPer100g(food: CreatingFood) {
   const divisionFactor = food.portionAmount / 100;
 

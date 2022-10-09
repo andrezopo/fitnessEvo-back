@@ -9,3 +9,11 @@ export async function insertFood(req: Request, res: Response) {
 
   res.status(201).send(createdFood);
 }
+
+export async function searchFood(req: Request, res: Response) {
+  const foodString = req.params.foodString;
+
+  const foods = await foodService.searchFood(foodString);
+
+  res.status(200).send(foods);
+}

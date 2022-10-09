@@ -85,7 +85,7 @@ enum Objective {
 }
 
 enum TrainingExperience {
-  begginer
+  beginner
   intermediate
   advanced
   athlete

@@ -27,21 +27,21 @@ export async function upvoteFood(foodId: number, userId: number) {
   await foodRepository.upvoteById(foodId);
 }
 
-// export async function downvote(foodId: number, userId: number) {
-//   const food = await foodRepository.searchFoodById(foodId);
-//   if (!food) {
-//     throw {
-//       type: "notFound",
-//       message: "This food table does not exist anymore",
-//     };
-//   }
-//   try {
-//     await usersVotesRepository.insertUserVote({ userId, foodId });
-//   } catch (err) {
-//     throw { type: "conflict", message: "You already voted for this one" };
-//   }
-//   await foodRepository.downvoteById(foodId);
-// }
+export async function downvoteFood(foodId: number, userId: number) {
+  const food = await foodRepository.searchFoodById(foodId);
+  if (!food) {
+    throw {
+      type: "notFound",
+      message: "This food table does not exist anymore",
+    };
+  }
+  try {
+    await usersVotesRepository.insertUserVote({ userId, foodId });
+  } catch (err) {
+    throw { type: "conflict", message: "You already voted for this one" };
+  }
+  await foodRepository.downvoteById(foodId);
+}
 
 function calculateMacrosPer100g(food: CreatingFood) {
   const divisionFactor = food.portionAmount / 100;

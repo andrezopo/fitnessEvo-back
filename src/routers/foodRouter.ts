@@ -1,5 +1,6 @@
 import { Router } from "express";
 import {
+  downvoteFood,
   insertFood,
   searchFood,
   upvoteFood,
@@ -15,5 +16,7 @@ foodRouter.post("/", validateSchema(foodSchema), validateToken, insertFood);
 foodRouter.get("/:foodString", validateToken, searchFood);
 
 foodRouter.post("/upvote/:id", validateToken, upvoteFood);
+
+foodRouter.post("/downvote/:id", validateToken, downvoteFood);
 
 export default foodRouter;

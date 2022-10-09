@@ -26,6 +26,27 @@ export async function getUserinfos(userId: number) {
   return await userRepository.getInfos(userId);
 }
 
+export async function updateUserInfos(
+  userInfos: UserAdditionalInfos,
+  userId: number
+) {
+  const { calorieGoal, proteinGoal, carbohydrateGoal, fatGoal } =
+    calculateUserGoals(userInfos);
+
+  const userCompleteInfos = {
+    userId,
+    ...userInfos,
+    calorieGoal,
+    proteinGoal,
+    carbohydrateGoal,
+    fatGoal,
+  };
+
+  await userRepository.updateInfos(userCompleteInfos);
+
+  return userCompleteInfos;
+}
+
 function calculateUserGoals(userInfos: UserAdditionalInfos) {
   let basalMethabolicRate = 0;
   let totalDailyEnergyExpenditure = 0;

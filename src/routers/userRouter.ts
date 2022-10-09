@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { insertUserInfos } from "../controllers/userController";
+import { getUserinfos, insertUserInfos } from "../controllers/userController";
 import validateSchema from "../middlewares/validateSchema";
 import validateToken from "../middlewares/validateToken";
 import additionalInfoSchema from "../schemas/additionalInfoSchema";
@@ -12,5 +12,7 @@ userRouter.post(
   validateToken,
   insertUserInfos
 );
+
+userRouter.get("/infos", validateToken, getUserinfos);
 
 export default userRouter;

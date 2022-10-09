@@ -5,30 +5,52 @@ export async function insertUserInfos(
   userInfos: UserAdditionalInfos,
   userId: number
 ) {
+  const { calorieGoal, proteinGoal, carbohydrateGoal, fatGoal } =
+    calculateUserGoals(userInfos);
+
+  const userCompleteInfos = {
+    userId,
+    ...userInfos,
+    calorieGoal,
+    proteinGoal,
+    carbohydrateGoal,
+    fatGoal,
+  };
+
+  await userRepository.insertInfos(userCompleteInfos);
+
+  return userCompleteInfos;
+}
+
+export async function getUserinfos(userId: number) {
+  return await userRepository.getInfos(userId);
+}
+
+function calculateUserGoals(userInfos: UserAdditionalInfos) {
   let basalMethabolicRate = 0;
   let totalDailyEnergyExpenditure = 0;
   let activityFactor = 1;
   let carbPerKg = 0;
   switch (userInfos.activityLevel) {
     case "sedentary":
-      activityFactor = 1.4;
+      activityFactor = 1.3;
       carbPerKg = 2.5;
       break;
     case "lightly_active":
-      activityFactor = 1.6;
+      activityFactor = 1.5;
       carbPerKg = 3.5;
       break;
     case "active":
-      activityFactor = 1.9;
-      carbPerKg = 4.0;
-      break;
-    case "very_active":
-      activityFactor = 2.2;
+      activityFactor = 1.7;
       carbPerKg = 4.5;
       break;
+    case "very_active":
+      activityFactor = 1.9;
+      carbPerKg = 5.5;
+      break;
     default:
-      activityFactor = 2.5;
-      carbPerKg = 6.0;
+      activityFactor = 2.2;
+      carbPerKg = 7.0;
   }
   if (userInfos.bodyFat === undefined) {
     if (userInfos.sex === "male") {
@@ -45,55 +67,70 @@ export async function insertUserInfos(
   totalDailyEnergyExpenditure = basalMethabolicRate * activityFactor;
   let proteinPerKg = 0;
   let calorieGoal = 0;
+  switch (userInfos.trainingExperience) {
+    case "athlete":
+      switch (userInfos.objective) {
+        case "fat_loss":
+          proteinPerKg = 3.1;
+          calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
+          break;
+        case "mass_gain":
+          proteinPerKg = 2.4;
+          calorieGoal = Math.round(1.1 * totalDailyEnergyExpenditure);
+          break;
+        case "maintenance":
+          proteinPerKg = 2.0;
+          calorieGoal = totalDailyEnergyExpenditure;
+          break;
+      }
+      break;
 
-  switch (userInfos.objective && userInfos.trainingExperience) {
-    case "fat_loss" && "athlete":
-      proteinPerKg = 3.1;
-      calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
+    case "advanced":
+      switch (userInfos.objective) {
+        case "fat_loss":
+          proteinPerKg = 2.8;
+          calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
+          break;
+        case "mass_gain":
+          proteinPerKg = 2.2;
+          calorieGoal = Math.round(1.1 * totalDailyEnergyExpenditure);
+          break;
+        case "maintenance":
+          proteinPerKg = 1.8;
+          calorieGoal = Math.round(totalDailyEnergyExpenditure);
+          break;
+      }
       break;
-    case "fat_loss" && "advanced":
-      proteinPerKg = 2.8;
-      calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
-      break;
-    case "fat_loss" && "intermediate":
-      proteinPerKg = 2.5;
-      calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
-      break;
-    case "fat_loss" && "beginner":
-      proteinPerKg = 2.3;
-      calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
-      break;
-    case "mass_gain" && "athlete":
-      proteinPerKg = 2.4;
-      calorieGoal = Math.round(1.4 * totalDailyEnergyExpenditure);
-      break;
-    case "mass_gain" && "advanced":
-      proteinPerKg = 2.2;
-      calorieGoal = Math.round(1.4 * totalDailyEnergyExpenditure);
-      break;
-    case "mass_gain" && "intermediate":
-      proteinPerKg = 1.9;
-      calorieGoal = Math.round(1.4 * totalDailyEnergyExpenditure);
-      break;
-    case "mass_gain" && "beginner":
-      proteinPerKg = 1.6;
-      calorieGoal = Math.round(1.4 * totalDailyEnergyExpenditure);
-      break;
-    case "maintenance" && "athlete":
-      proteinPerKg = 2.0;
-      calorieGoal = totalDailyEnergyExpenditure;
-      break;
-    case "maintenance" && "advanced":
-      proteinPerKg = 1.8;
-      calorieGoal = totalDailyEnergyExpenditure;
-      break;
-    case "maintenance" && "intermediate":
-      proteinPerKg = 1.6;
-      calorieGoal = totalDailyEnergyExpenditure;
-      break;
-    case "maintenance" && "beginner":
-      proteinPerKg = 1.4;
-      calorieGoal = totalDailyEnergyExpenditure;
+    case "intermediate":
+      switch (userInfos.objective) {
+        case "fat_loss":
+          proteinPerKg = 2.5;
+          calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
+          break;
+        case "mass_gain":
+          proteinPerKg = 1.9;
+          calorieGoal = Math.round(1.1 * totalDailyEnergyExpenditure);
+          break;
+        case "maintenance":
+          proteinPerKg = 1.6;
+          calorieGoal = Math.round(totalDailyEnergyExpenditure);
+          break;
+      }
+    case "beginner":
+      switch (userInfos.objective) {
+        case "fat_loss":
+          proteinPerKg = 2.3;
+          calorieGoal = Math.round(0.8 * totalDailyEnergyExpenditure);
+          break;
+        case "mass_gain":
+          proteinPerKg = 1.6;
+          calorieGoal = Math.round(1.1 * totalDailyEnergyExpenditure);
+          break;
+        case "maintenance":
+          proteinPerKg = 1.4;
+          calorieGoal = Math.round(totalDailyEnergyExpenditure);
+          break;
+      }
       break;
   }
 
@@ -111,17 +148,5 @@ export async function insertUserInfos(
     )
   );
 
-  const userCompleteInfos = {
-    userId,
-    ...userInfos,
-    calorieGoal,
-    proteinGoal,
-    carbohydrateGoal,
-    fatGoal,
-  };
-  console.log(userCompleteInfos);
-
-  await userRepository.insertInfos(userCompleteInfos);
-
-  return userCompleteInfos;
+  return { calorieGoal, proteinGoal, fatGoal, carbohydrateGoal };
 }

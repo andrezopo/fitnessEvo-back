@@ -44,9 +44,10 @@ model UserInfos {
 model Foods {
   id           Int     @id @default(autoincrement())
   name         String
-  protein      Int
-  carbohydrate Int
-  fat          Int
+  calories     Int
+  protein      Float
+  carbohydrate Float
+  fat          Float
   votes        Int     @default(0)
   meals        Meals[]
 

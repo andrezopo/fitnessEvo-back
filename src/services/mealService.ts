@@ -11,3 +11,7 @@ export async function insertMeal(meal: CreatingMeal, userId: number) {
   };
   return await mealRepository.insertMeal(completeMeal);
 }
+
+export async function getTodayMeals(userId: number) {
+  return await mealRepository.getTodayMeals(userId);
+}

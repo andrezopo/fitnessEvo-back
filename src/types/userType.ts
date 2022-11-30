@@ -15,3 +15,10 @@ export type UserAdditionalInfos = Omit<
 >;
 
 export type CreatingUserInfos = Omit<UserInfos, "id">;
+
+export type UserGoals = {
+  calorieGoal: number;
+  proteinGoal: number;
+  carbohydrateGoal: number;
+  fatGoal: number;
+};

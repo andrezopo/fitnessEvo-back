@@ -1,4 +1,4 @@
-import { UserAdditionalInfos } from "../types/userType";
+import { UserAdditionalInfos, UserGoals } from "../types/userType";
 import * as userRepository from "../repositories/userRepository";
 
 export async function insertUserInfos(
@@ -168,6 +168,19 @@ function calculateUserGoals(userInfos: UserAdditionalInfos) {
       ((calorieGoal - (proteinGoal + carbohydrateGoal) * 4) / 9).toFixed(2)
     )
   );
+  const userGoals: UserGoals = {
+    calorieGoal,
+    proteinGoal,
+    carbohydrateGoal,
+    fatGoal,
+  };
 
-  return { calorieGoal, proteinGoal, fatGoal, carbohydrateGoal };
+  if (userGoals.fatGoal <= 0) {
+    const minimumFatGoal = 20;
+    const caloriesToExchange = userGoals.fatGoal * -1 * 9 + minimumFatGoal * 9;
+    userGoals.carbohydrateGoal -= Number((caloriesToExchange / 4).toFixed(2));
+    userGoals.fatGoal = minimumFatGoal;
+  }
+
+  return userGoals;
 }
